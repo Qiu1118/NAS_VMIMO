@@ -1,0 +1,70 @@
+# NAS-VMIMO default configuration
+
+data:
+  n_train: 50000
+  n_test:  10000
+  batch_size: 64
+  num_workers: 4
+  seed: 42
+
+modalities:
+  # name: dim  (must match dataset.py MODALITY_CONFIGS)
+  visual:        128
+  radar:          32
+  infrared:       32
+  audio:          64
+  environmental:  64
+  # total: 320
+
+channel:
+  Nt: 4
+  Nr: 4
+  snr_db: 5.0
+  channel_type: rayleigh
+
+resource_model:
+  phi_comp:   0.85
+  phi_mem:    0.90
+  sigma_comp: 0.15
+  sigma_mem:  0.10
+  rho:        0.30
+  ac:        -0.30   # log-domain threshold for computation
+  am:        -0.30   # log-domain threshold for memory
+
+vmimo:
+  eta1: 0.60         # switching threshold Case2 vs Case3
+  eta:  0.60         # responder compression threshold (Algorithm 1)
+  r_dof: 4           # spatial DoFs = min(Nt, Nr) for AWGN sim
+  q_m:  8            # low-rank bottleneck for Case 3
+
+encoder:
+  d_model: 128
+  n_heads: 4
+  n_layers: 2        # NAS will override this
+  ffn_dim: 256
+  dropout: 0.1
+  # backend: "meta_transformer" | "standard"  (swap here when Meta-Transformer ready)
+  backend: "standard"
+
+nas:
+  enabled: true
+  max_params_M: 10.0          # Ptotal threshold in millions (θ_mem)
+  flops_budget_G: 1.0         # G FLOPs budget
+  n_search_epochs: 20
+  arch_lr: 0.001              # architecture parameter learning rate
+  weight_lr: 0.0005
+  gamma: 0.1                  # latency penalty coefficient
+  delta: 0.05                 # energy penalty coefficient
+
+training:
+  epochs: 30
+  lr: 5.0e-5
+  batch_size: 64
+  optimizer: adam
+  lambda_pg:    0.5           # penalty weight for c_PG constraint
+  lambda_demod: 0.5           # penalty weight for c_demod_m constraint
+
+logging:
+  log_dir: "runs/"
+  eval_interval: 1            # evaluate every N epochs
+  save_best: true
