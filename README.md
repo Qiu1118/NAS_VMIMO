@@ -13,14 +13,14 @@ nas_vmimo/
 ├── models/
 │   ├── vmimo.py        ✅ Phase 1  — VMIMO: Case 1/2/3 + Controller
 │   ├── encoder.py      ✅ Phase 2  — Meta-Transformer style multimodal encoder
-│   └── resource.py     🔲 Phase 2  — pjoint runtime monitor wrapper
+│   └── resource.py     ✅ Phase 2  — pjoint runtime monitor wrapper
 ├── nas/
 │   ├── search_space.py 🔲 Phase 4  — DARTS-style search space
 │   ├── trainer.py      🔲 Phase 4  — bilevel NAS training loop
 │   └── strategy.py     🔲 Phase 4  — 3-stage NAS (Algorithm 2)
 ├── train/
 │   ├── loss.py         ✅ Phase 3  — L_recv + penalty terms (Equ. 23), grad verified
-│   └── e2e_trainer.py  🔲 Phase 3  — end-to-end training loop
+│   └── e2e_trainer.py  ✅ Phase 3  — end-to-end training loop
 └── configs/
     └── default.yaml    ✅            — all hyperparameters
 
@@ -64,7 +64,7 @@ X_mem  = math.log(1 - psutil.virtual_memory().percent/100 + 1e-3)
   - `ModalityAttentionWeight`— Equ. 9: w(m) with λ, μ, β(m)
   - `VMIMOController`        — Algorithm 1 control flow
 
-### Phase 2 — Encoder  🔲 (needs Meta-Transformer details)
+### Phase 2 — Encoder  ✅
 The encoder interface is:
 ```python
 class MultimodalEncoder(nn.Module):
@@ -80,7 +80,7 @@ When Meta-Transformer paper/code is provided, implement:
 Until then, `backend: "standard"` in config uses independent
 per-modality linear projections + shared Transformer.
 
-### Phase 3 — E2E Training  🔲
+### Phase 3 — E2E Training  ✅
 Loss (Equ. 23):
 ```
 L_total = L_recv + λ_PG * ReLU(c_PG)² + Σ_m λ_m * ReLU(c_demod_m)²
